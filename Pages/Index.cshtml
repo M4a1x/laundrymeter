@@ -1,0 +1,39 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Status Waschmaschine";
+}
+
+<div class="center-block container" style="width: 400px;">
+    <div class="row">
+        <div class="col-xs-6">Email</div>
+        <div class="col-xs-6" id="email">@Model.Email</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">Spannung [V]</div>
+        <div class="col-xs-6" id="voltage">@Model.EDevice.Voltage</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">Strom [A]</div>
+        <div class="col-xs-6" id="current">@Model.EDevice.Current</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">Leistung [W]</div>
+        <div class="col-xs-6" id="power">@Model.EDevice.Power</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">Stromverbrauch [kWh]</div>
+        <div class="col-xs-6" id="total_power">@Model.EDevice.TotalPower</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">Läuft gerade?</div>
+        <div class="col-xs-6" id="total_power">@Model.EDevice.Running</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">Benachrichtige mich</div>
+        <div class="col-xs-6" id="notify"><a href="https://telegram.me/laundrymeter_bot?start=notify">Via Telegram</a></div>
+    </div>
+</div>
+    
+<script src="~/lib/signalr/signalr.js"></script>    
+<script src="~/js/data.js"></script>
