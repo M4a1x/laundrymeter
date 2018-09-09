@@ -92,8 +92,8 @@ class DebugInfo(Resource):
     def get(self):
         return washing_mashine_debug_schema.dump(washing_machine)
 
-@api.route('/notify')
-class Notify(Resource):
+@api.route('/notify/email')
+class NotifyEmail(Resource):
     @jwt_required
     def get(self):
         return user_list_schema.dump(notifyList)
@@ -117,6 +117,11 @@ class Notify(Resource):
                 return { 'result': 'error', 'details': 'User not on notify list' }, 400
         except ValidationError as err:
             return { 'result': 'error', 'details': err.messages}, 400
+
+@api.route('/notify/telegram')
+class NotifyTelegram(Resource):
+    @jwt_required
+    def post(self):
 
 ###################################################
 ##### JWT Authentication and Identity Methods #####
