@@ -314,15 +314,16 @@ def telegram_auth_required(func):
 
 def start(bot, update, args):
     if not args:
-        update.message.reply_text("Missing token. Please authenticate first.")
+        update.message.reply_text("Missing token.")
         return
 
     user = User.query.filter_by(telegram_token=args[0]).first()
     if not user:
-        update.message.reply_text("Invalid token. Please authenticate first.")
+        update.message.reply_text("Invalid token.")
         return
 
-    user.telegram_chat_id = update.message.chat_id        
+    user.telegram_chat_id = update.message.chat_id
+    user.telegram_token = ""      
     db.session.commit()
     update.message.reply_text("Successfully authenticated!")
 
