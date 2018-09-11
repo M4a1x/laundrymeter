@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_restplus import Resource, Api
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc
+from sqlalchemy import asc, desc, func
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields, post_load, ValidationError
 import os
@@ -216,13 +216,25 @@ def update_washing_mashine():
                                      current=emeter['current_ma']/1000,
                                      power=emeter['power_mw']/1000,
                                      total_power=emeter['total_wh']/1000)
+    
     db.session.add(washing_machine)
+    db.session.flush()
+
+    count = db.session.query(func.count(WashingMachine.timestamp)).scalar()
+
+    if count > 6307200: # delete oldest, when limit (one year; 6.307.200 rows (5sec interval), 50MB?) is reached
+        washing_machine = WashingMachine.query.order_by(asc('timestamp')).first()
+        db.session.delete(washing_machine)
+    
+    if count > 6400000:
+        db.session.query(WashingMachine).delete()
+
     db.session.commit()
 
-    if last.running == True != running:
+    # Notify when Washing Mashine is finished
+    if last and last.running == True != running:
         notify()
-
-    # TODO: Limit Database max. size
+    
 
 def notify():
     # Email
