@@ -17,5 +17,6 @@ Roadmap
 * Implement Logging!
 * Better exception Handling (no plug detected, wrong parameters, ...)
 * export config to seperate file
+* Write setup.py for installation (to docker conainter?)
 * Write dockerfiles to encapsulate the service
 * Write docker-compose script (or so) to integrate different containers (nginx, python, ...)
