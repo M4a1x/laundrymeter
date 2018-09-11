@@ -10,7 +10,7 @@ Installation
 Roadmap
 -------
 
-* Modularize app.py
+* Modularize app.py, maybe use schedule then, instead of apscheduler (celery is probably overkill)
 * Write better documentation (function, class, etc.)
 * Write better api documentation (swagger)
 * Write tests!
