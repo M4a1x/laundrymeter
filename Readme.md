@@ -10,7 +10,6 @@ Installation
 Roadmap
 -------
 
-* Reduce requirements.txt to only necessary parts
 * Write dockerfiles to encapsulate the service.
 * Write docker-compose script (or so) to integrate different containers (nginx, python, ...)
 * Modularize app.py
