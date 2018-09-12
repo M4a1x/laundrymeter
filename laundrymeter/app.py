@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from flask_restplus import Resource, Api
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
 from flask_sqlalchemy import SQLAlchemy
