@@ -10,6 +10,7 @@ Installation
 Roadmap
 -------
 
+* Use techniques from [Flask Tutorial](http://flask.pocoo.org/docs/1.0/tutorial/layout/) and [flask-restplus Scaling](https://flask-restplus.readthedocs.io/en/0.11.0/scaling.html)
 * Modularize app.py, maybe use schedule then, instead of apscheduler (celery is probably overkill)
 * Write better documentation (function, class, etc.)
 * Write better api documentation (swagger)

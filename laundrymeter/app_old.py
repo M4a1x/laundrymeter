@@ -15,6 +15,7 @@ import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 import smtplib
 from telegram.ext import Updater, CommandHandler
+import click
 
 # TODO: Swagger documentation with RESTplus
 # We're building a flask api
@@ -349,6 +350,25 @@ updater.start_polling() # Looks like it blocks, when importing module in python 
 
 # Shutdown the polling on exit
 atexit.register(lambda: updater.stop())
+
+# DB Helper functions
+def init_app(app):
+    app.cli.add_command(init_db_command)
+
+def delete_db():
+    db.reflect()
+    db.drop_all()
+
+def init_db():
+    delete_db()
+    db.create_all()
+
+@click.command('init-db')
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    click.echo('Initialized the database.')
 
 if __name__ == '__main__':
     app.run(debug=True, user_reloader=false)
