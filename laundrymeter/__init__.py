@@ -16,7 +16,8 @@ def create_app(test_config=None):
         #SECRET_KEY='dev', # used by flask for signing session cookie, do I use it? -> No.
         JWT_SECRET_KEY='dev',
         JWT_ACCESS_TOKEN_EXPIRES=False,
-        SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(app.instance_path, 'laundrymeter.db'),
+        SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(app.instance_path,
+                                                          'db.sqlite'),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     
         # Custom config
