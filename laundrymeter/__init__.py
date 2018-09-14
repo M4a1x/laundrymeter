@@ -2,7 +2,7 @@ import os
 from flask import Flask
 
 from apis import bp as api
-from models import db
+from models import db, ma
 import db_helper
 
 
@@ -30,13 +30,13 @@ def create_app(test_config=None):
     )
 
     if test_config is None:
-        # load the instance config, if it exists, when not testing
+        # Load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
     else:
-        # load the test config if passed in
+        # Load the test config if passed in
         app.config.from_mapping(test_config)
 
-    # ensure the instance folder exists
+    # Ensure the instance folder exists
     os.makedirs(app.instance_path, exist_ok=True)
 
     # Register flask-restplus
@@ -47,5 +47,8 @@ def create_app(test_config=None):
 
     # Register init-db command/init app
     db_helper.init_app(app)
+
+    # Register Marshmallow (after SQLAlchemy)
+    ma.init_app(app)
 
     return app
