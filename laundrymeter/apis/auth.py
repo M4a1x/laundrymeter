@@ -14,6 +14,8 @@ from flask_httpauth import HTTPBasicAuth
 from flask import current_app, g
 from ..models import User, db
 
+# TODO: Add api doc?
+
 
 api = Namespace('auth', description='Operations for authentication.')
 auth = HTTPBasicAuth()

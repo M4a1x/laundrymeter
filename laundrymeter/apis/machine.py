@@ -10,6 +10,8 @@ wm_status_schema = WashingMachineSchema(only=('timestamp', 'running', 'last_chan
 wm_debug_schema = WashingMachineSchema()
 
 # TODO: Check returned Schema format. Maybe include name/title?
+# TODO: Add api doc
+# TODO: Add docstring
 
 @api.route('/machine')
 class Machine(Resource):

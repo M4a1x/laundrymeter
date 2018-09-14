@@ -27,6 +27,8 @@ ma = Marshmallow()
 ##################
 
 class User(db.Model):
+    """Representing a user with config. Authentication is handled in ldap."""
+
     __tablename__ = 'user'
     username = db.Column(db.String(255), primary_key=True)
     email = db.Column(db.String(255), unique=True)
@@ -100,6 +102,7 @@ class User(db.Model):
 
 
 class WashingMachine(db.Model):
+    """Model for storing current status of the Washing Machine in the DB."""
     __tablename__ = 'washingmachine'
     timestamp = db.Column(db.DateTime, primary_key=True)
     running = db.Column(db.Boolean)
@@ -115,14 +118,12 @@ class WashingMachine(db.Model):
 ###################
 
 class WashingMachineSchema(ma.ModelSchema):
+    """Schema for JSON (De-)Serialization of Washing Machine."""
     class Meta:
         model = WashingMachine
 
 
 class UserSchema(ma.ModelSchema):
+    """Schema for JSON (De-)Serialization of User."""
     class Meta:
         model = User
-
-    @post_load
-    def make_user(self, data):
-        return User(**data)

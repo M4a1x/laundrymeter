@@ -11,6 +11,10 @@ user_schema = UserSchema()
 
 
 # TODO: Add failure.. (i.e. on error)
+# TODO: Add api doc
+# TODO: Add docstring
+
+
 @api.route('/notify/email')
 class NotifyEmail(Resource):
     def get(self):

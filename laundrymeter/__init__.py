@@ -8,6 +8,8 @@ import db_helper
 
 # Application Factory
 def create_app(test_config=None):
+    """The application factory."""
+    
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
