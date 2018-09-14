@@ -7,24 +7,25 @@ from .auth import auth
 api = Namespace('email', description='Operations for registering and listing Email notifications.')
 
 user_list_schema = UserSchema(only=['name'], many=True)
-user_schema = UserSchema()
-
 
 # TODO: Add failure.. (i.e. on error)
 # TODO: Add api doc
 # TODO: Add docstring
 
 
-@api.route('/notify/email')
+@api.route('/')
 class NotifyEmail(Resource):
     def get(self):
+        """Get a list of users to be notified via email."""
         users = User.query.filter_by(notify_email=True)
         return user_list_schema.dumps(users), 200
     
     def post(self):
+        """Add own user to be notified via email."""
         g.user.register_notification(email=True)
-        return { 'result': 'success', 'email_added': user.email }, 200
+        return { 'result': 'success', 'notify_email': g.user.email }, 200
 
     def delete(self):
-        g.user.register_notification(email=True)
-        return { 'result': 'success', 'details': user.email + " won't recieve an email." }, 200
+        """Remove own user to be notified via email."""
+        g.user.register_notification(email=False)
+        return { 'result': 'success', 'details': g.user.email + " won't recieve an email." }, 200
