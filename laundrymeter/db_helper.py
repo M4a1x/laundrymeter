@@ -1,6 +1,7 @@
 import click
 from flask.cli import with_appcontext
-from models import db
+
+from .models import db
 
 
 # DB Helper functions

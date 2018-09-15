@@ -3,9 +3,9 @@ from flask import Flask
 
 from .apis import bp as api
 from .models import db, ma
-import .telegram_bot
-import .wm_poller
-import .db_helper
+from . import telegram_bot
+from . import wm_poller
+from . import db_helper
 
 
 # Application Factory
@@ -17,12 +17,9 @@ def create_app(test_config=None):
 
     # Default config
     app.config.from_mapping(
-        #SECRET_KEY='dev', # used by flask for signing session cookie, do I use it? -> No.
-        JWT_SECRET_KEY='dev',
-        JWT_ACCESS_TOKEN_EXPIRES=False,
         SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(app.instance_path,
                                                           'db.sqlite'),
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        SQLALCHEMY_TRACK_MODIFICATIONS=True,
     
         # Custom config
         LDAP_URL="ldap.example.org",
@@ -57,9 +54,9 @@ def create_app(test_config=None):
     ma.init_app(app)
 
     # Init telegram bot
-    telegram_bot.init_app()
+    telegram_bot.init_app(app)
 
     # Init Washing Machine poller
-    wm_poller.init_app()
+    wm_poller.init_app(app)
 
     return app

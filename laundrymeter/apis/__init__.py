@@ -23,11 +23,12 @@ api = Api(bp,
     version='0.1.0',
     description='Provides various endpoints and interfaces for getting the status of the Washing machine.',
     authorizations=authorizations,
-    security='basicAuth' # Document authorization for all endpoints
-    decorators=basic_auth.login_required # Require authorizations for all endpoints
+    security='basicAuth', # Document authorization for all endpoints
+    decorators=[basic_auth.login_required] # Require authorizations for all endpoints
     # All API metadatas
     # TODO: Input metadata defining the api
 )
+Api()
 
 # Add api namespaces to the main api
 api.add_namespace(machine, path='/machine')

@@ -1,8 +1,8 @@
+from flask import g
 from flask_restplus import Namespace, Resource
 
 from ..models import User, UserSchema
 from .auth import auth
-from ..telegram_bot import updater
 
 
 api = Namespace('telegram', description='Operations for registering and listing Telegram notifications.')
@@ -38,5 +38,5 @@ class RegisterTelegram(Resource):
     def post(self):
         """Register own user to enable notification via telegram."""
         token = g.user.generate_telegram_token()
-        auth_url = "https://telegram.me/{}?start={}".format(updater.bot.name[1:], token)
+        auth_url = "https://telegram.me/{}?start={}".format(g.telegram_updater.bot.name[1:], token)
         return { 'result': 'success', 'auth_url': auth_url }, 200

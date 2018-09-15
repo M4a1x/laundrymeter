@@ -1,13 +1,12 @@
 from flask import current_app, g
 from sqlalchemy import desc
 from telegram.ext import Updater, CommandHandler
+from functools import wraps
 import atexit
 
 from .models import User, WashingMachine
 
 # TODO: Docstring
-
-updater = Updater(current_app.config['TELEGRAM_BOT_TOKEN'])
 
 def telegram_auth_required(func):
     @wraps(func)
@@ -44,7 +43,10 @@ def status(bot, update):
     washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
     update.message.reply_text("Running" if washing_machine.running else "Stopped") 
 
-def init_app():
+def init_app(app):
+    updater = Updater(app.config['TELEGRAM_BOT_TOKEN'])
+    g.telegram_updater = updater # Make it available to flask functions
+
     updater.dispatcher.add_handler(CommandHandler('notify', notify))
     updater.dispatcher.add_handler(CommandHandler('start', start, pass_args=True))
     updater.dispatcher.add_handler(CommandHandler('status', status))
