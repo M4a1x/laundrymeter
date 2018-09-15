@@ -75,10 +75,14 @@ class User(db.Model):
         return self.telegram_token
 
     @classmethod
-    def verify_telegram_token(token):
-        """Verify telegram token and return corresponding user object."""
+    def verify_telegram_token(token, chat_id):
+        """Verify telegram token delete it from database and return corresponding user object."""
         try:
+            session = inspect(self).session
             user = User.query.filter_by(telegram_token=token).one()
+            user.telegram_token = ""
+            user.telegram_chat_id = chat_id
+            session.commit()
         except:
             user = None
         return user

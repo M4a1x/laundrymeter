@@ -1,9 +1,10 @@
 import os
 from flask import Flask
 
-from apis import bp as api
-from models import db, ma
-import db_helper
+from .apis import bp as api
+from .models import db, ma
+import .telegram_bot
+import .db_helper
 
 
 # Application Factory
@@ -52,5 +53,8 @@ def create_app(test_config=None):
 
     # Register Marshmallow (after SQLAlchemy)
     ma.init_app(app)
+
+    # Init telegram bot
+    telegram_bot.init_app()
 
     return app
