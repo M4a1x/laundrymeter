@@ -4,6 +4,7 @@ from flask import Flask
 from .apis import bp as api
 from .models import db, ma
 import .telegram_bot
+import .wm_poller
 import .db_helper
 
 
@@ -29,7 +30,8 @@ def create_app(test_config=None):
         SMART_PLUG_IP='192.168.1.100',
         SMTP_EMAIL='test@example.org',
         SMTP_PASSWORD='dev',
-        TELEGRAM_BOT_TOKEN='dev'
+        TELEGRAM_BOT_TOKEN='dev',
+        POLL_INTERVAL=5
     )
 
     if test_config is None:
@@ -56,5 +58,8 @@ def create_app(test_config=None):
 
     # Init telegram bot
     telegram_bot.init_app()
+
+    # Init Washing Machine poller
+    wm_poller.init_app()
 
     return app
