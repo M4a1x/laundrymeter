@@ -2,7 +2,7 @@ from flask import current_app, g
 from telegram.ext import Updater, CommandHandler
 import atexit
 
-from .models import User
+from .models import User, WashingMachine
 
 # TODO: Docstring
 
@@ -11,11 +11,12 @@ updater = Updater(current_app.config['TELEGRAM_BOT_TOKEN'])
 def telegram_auth_required(func):
     @wraps(func)
     def wrapped(bot, update, *args, **kwargs):
-        user = User.query.filter_by(telegram_chat_id=update.message.chat_id).first()
+        user = User.query.filter_by(telegram_chat_id=update.message.chat_id).one()
         if not user:
             update.message.reply_text("Unauthorized. Please authenticate first.")
             return
 
+        g.user = user
         return func(bot, update, *args, **kwargs)
     return wrapped
 
@@ -34,10 +35,7 @@ def start(bot, update, args):
 
 @telegram_auth_required
 def notify(bot, update):
-    user = User.query.filter_by(telegram_chat_id=update.message.chat_id).first()
-    user.notify_telegram = True
-    db.session.commit()
-
+    g.user.register_notification(telegram=True)
     update.message.reply_text("You will be notified as soon as the laundry is ready.")
 
 @telegram_auth_required
