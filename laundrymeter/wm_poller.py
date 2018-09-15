@@ -1,4 +1,3 @@
-from flask import current_app
 from sqlalchemy import asc, desc, func
 from pyHS100 import SmartPlug
 from apscheduler.schedulers.background import BackgroundScheduler
