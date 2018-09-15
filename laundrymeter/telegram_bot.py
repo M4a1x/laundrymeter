@@ -4,6 +4,8 @@ import atexit
 
 from .models import User
 
+# TODO: Docstring
+
 updater = Updater(current_app.config['TELEGRAM_BOT_TOKEN'])
 
 def telegram_auth_required(func):
