@@ -1,10 +1,10 @@
-from flask import current_app, g
 from sqlalchemy import desc
 from telegram.ext import Updater, CommandHandler
 from functools import wraps
 import atexit
 
 from .models import User, WashingMachine
+
 
 # TODO: Docstring
 
@@ -44,8 +44,8 @@ def status(bot, update):
     update.message.reply_text("Running" if washing_machine.running else "Stopped") 
 
 def init_app(app):
+    global updater
     updater = Updater(app.config['TELEGRAM_BOT_TOKEN'])
-    g.telegram_updater = updater # Make it available to flask functions
 
     updater.dispatcher.add_handler(CommandHandler('notify', notify))
     updater.dispatcher.add_handler(CommandHandler('start', start, pass_args=True))
