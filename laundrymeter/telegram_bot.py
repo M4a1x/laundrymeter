@@ -1,4 +1,5 @@
 from flask import current_app, g
+from sqlalchemy import desc
 from telegram.ext import Updater, CommandHandler
 import atexit
 

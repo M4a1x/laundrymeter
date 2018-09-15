@@ -1,4 +1,5 @@
 from flask_restplus import Namespace, Resource
+from sqlalchemy import desc
 
 from ..models import WashingMachine, WashingMachineSchema
 from .auth import auth
