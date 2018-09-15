@@ -14,14 +14,14 @@ wm_debug_schema = WashingMachineSchema()
 # TODO: Add api doc
 # TODO: Add docstring
 
-@api.route('/machine')
+@api.route('/')
 class Machine(Resource):
     def get(self):
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         return wm_status_schema.dumps(washing_machine) # dumps returns JSON, dump dic
 
 
-@api.route('/machine/debug')
+@api.route('/debug')
 class DebugInfo(Resource):
     def get(self):
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
