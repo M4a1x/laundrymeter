@@ -43,7 +43,7 @@ class NotifyTelegram(Resource):
 class RegisterTelegram(Resource):
     @auth.login_required
     def post(self):
-        """Register own user to enable notification via telegram."""
+        """Register own user to enable notification via telegram. Replaces old user if previously registered."""
         token = g.user.generate_telegram_token()
         auth_url = "https://telegram.me/{}?start={}".format(telegram_bot.updater.bot.name[1:], token)
         return { 'result': 'success', 'auth_url': auth_url }, 200

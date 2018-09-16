@@ -19,6 +19,7 @@ wm_debug_schema = WashingMachineSchema()
 class Machine(Resource):
     @auth.login_required
     def get(self):
+        "Return the current status of the washing machine."
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         return wm_status_schema.dumps(washing_machine) # dumps returns JSON, dump dic
 
@@ -27,5 +28,6 @@ class Machine(Resource):
 class DebugInfo(Resource):
     @auth.login_required
     def get(self):
+        "Return extended status of the washing machine."
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         return wm_debug_schema.dumps(washing_machine)
