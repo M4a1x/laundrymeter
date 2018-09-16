@@ -19,11 +19,14 @@ from ..models import User, db
 # TODO: Add api doc?
 
 
-api = Namespace('auth', description='Operations for authentication.')
 auth = HTTPBasicAuth()
+api = Namespace('auth',
+                description='Operations for authentication.')
+
 
 @api.route('/')
 class Authentication(Resource):
+    @auth.login_required
     @api.doc('get_token')
     def get(self):
         '''Get a new token and invalidate the old one if it exists.'''

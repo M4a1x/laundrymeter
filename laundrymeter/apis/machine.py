@@ -5,7 +5,8 @@ from ..models import WashingMachine, WashingMachineSchema
 from .auth import auth
 
 
-api = Namespace('machine', description='Operations for querying the current washing machine status.')
+api = Namespace('machine',
+                description='Operations for querying the current washing machine status.')
 
 wm_status_schema = WashingMachineSchema(only=('timestamp', 'running', 'last_changed'))
 wm_debug_schema = WashingMachineSchema()
@@ -16,6 +17,7 @@ wm_debug_schema = WashingMachineSchema()
 
 @api.route('/')
 class Machine(Resource):
+    @auth.login_required
     def get(self):
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         return wm_status_schema.dumps(washing_machine) # dumps returns JSON, dump dic
@@ -23,6 +25,7 @@ class Machine(Resource):
 
 @api.route('/debug')
 class DebugInfo(Resource):
+    @auth.login_required
     def get(self):
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         return wm_debug_schema.dumps(washing_machine)

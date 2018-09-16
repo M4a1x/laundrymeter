@@ -5,7 +5,8 @@ from ..models import User, UserSchema
 from .auth import auth
 
 
-api = Namespace('email', description='Operations for registering and listing Email notifications.')
+api = Namespace('email',
+                description='Operations for registering and listing Email notifications.')
 
 user_list_schema = UserSchema(only=['name'], many=True)
 
@@ -16,16 +17,19 @@ user_list_schema = UserSchema(only=['name'], many=True)
 
 @api.route('/')
 class NotifyEmail(Resource):
+    @auth.login_required
     def get(self):
         """Get a list of users to be notified via email."""
         users = User.query.filter_by(notify_email=True)
         return user_list_schema.dumps(users), 200
     
+    @auth.login_required
     def post(self):
         """Add own user to be notified via email."""
         g.user.register_notification(email=True)
         return { 'result': 'success', 'notify_email': g.user.email }, 200
 
+    @auth.login_required
     def delete(self):
         """Remove own user to be notified via email."""
         g.user.register_notification(email=False)
