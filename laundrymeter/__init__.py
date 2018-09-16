@@ -42,7 +42,7 @@ def create_app(test_config=None):
     os.makedirs(app.instance_path, exist_ok=True)
 
     # Register flask-restplus
-    app.register_blueprint(api)
+    app.register_blueprint(api, url_prefix='/api')
 
     # Initialize SQLAlchemy Database
     db.init_app(app)

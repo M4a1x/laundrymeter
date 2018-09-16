@@ -7,12 +7,14 @@ from .telegram import api as telegram
 from .auth import api as auth, auth as basic_auth
 
 # Create Flask Blueprint
-bp = Blueprint('api', __name__, url_prefix='/api')
+bp = Blueprint('api', __name__)
 
 # Document HTTP Basic Auth
 authorizations = {
     'basicAuth': {
-        'type': 'http',
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'       
     }
 }
 
