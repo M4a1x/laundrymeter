@@ -87,7 +87,7 @@ class User(db.Model):
             user = None
         return user
 
-    def register_notification(**kwargs):
+    def register_notification(self, **kwargs):
         """Register supplied notifications.
         
         Args:
@@ -99,9 +99,9 @@ class User(db.Model):
         if kwargs:
             session = inspect(self).session
             if 'email' in kwargs:
-                self.notify_email = email
+                self.notify_email = kwargs['email']
             if 'telegram' in kwargs:
-                self.notify_telegram = telegram
+                self.notify_telegram = kwargs['telegram']
             session.commit()
 
 

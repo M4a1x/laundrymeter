@@ -76,7 +76,7 @@ def verify_login(username_or_token, password):
             if not resultSearch:
                 return False
 
-            user = User(username=username,
+            user = User(username=username_or_token,
                         email=conn.entries[0].mail.value,
                         name=conn.entries[0].name.value,
                         notify_email=False,

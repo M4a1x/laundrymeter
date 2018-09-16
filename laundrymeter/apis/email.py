@@ -1,3 +1,4 @@
+from flask import g
 from flask_restplus import Namespace, Resource
 
 from ..models import User, UserSchema
