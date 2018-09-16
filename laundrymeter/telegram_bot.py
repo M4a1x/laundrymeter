@@ -1,3 +1,4 @@
+from flask import g
 from sqlalchemy import desc
 from telegram.ext import Updater, CommandHandler
 from functools import wraps
@@ -11,13 +12,16 @@ from .models import User, WashingMachine
 def telegram_auth_required(func):
     @wraps(func)
     def wrapped(bot, update, *args, **kwargs):
-        user = User.query.filter_by(telegram_chat_id=update.message.chat_id).one()
-        if not user:
-            update.message.reply_text("Unauthorized. Please authenticate first.")
-            return
+        with ap.app_context():
+            user = User.query.filter_by(telegram_chat_id=update.message.chat_id).one()
+            if not user:
+                update.message.reply_text("Unauthorized. Please authenticate first.")
+                return
 
-        g.user = user
-        return func(bot, update, *args, **kwargs)
+            g.user = user
+
+            # Return inside app_context() to use same app context in called function. (to be able to use g)
+            return func(bot, update, *args, **kwargs)
     return wrapped
 
 def start(bot, update, args):
@@ -25,7 +29,8 @@ def start(bot, update, args):
         update.message.reply_text("Missing token.")
         return
 
-    user = User.verify_telegram_token(token=args[0], chat_id=update.message.chat_id)
+    with ap.app_context():
+        user = User.verify_telegram_token(token=args[0], chat_id=update.message.chat_id)
 
     if not user:
         update.message.reply_text("Invalid token.")
@@ -45,7 +50,9 @@ def status(bot, update):
 
 def init_app(app):
     global updater
+    global ap
     updater = Updater(app.config['TELEGRAM_BOT_TOKEN'])
+    ap = app
 
     updater.dispatcher.add_handler(CommandHandler('notify', notify))
     updater.dispatcher.add_handler(CommandHandler('start', start, pass_args=True))
