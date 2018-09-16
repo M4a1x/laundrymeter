@@ -52,7 +52,7 @@ class User(db.Model):
         session.commit()
         return self.auth_token
 
-    @classmethod
+    @staticmethod
     def verify_auth_token(token):
         """Verify auth token and return corresponding user object."""
         try:
@@ -74,7 +74,7 @@ class User(db.Model):
         session.commit()
         return self.telegram_token
 
-    @classmethod
+    @staticmethod
     def verify_telegram_token(token, chat_id):
         """Verify telegram token delete it from database and return corresponding user object."""
         try:
