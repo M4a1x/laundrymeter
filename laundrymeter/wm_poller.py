@@ -32,55 +32,60 @@ def notify_all():
 
 
 def update_washing_mashine():
-    now = datetime.utcnow()
+    with ap.app_context():
+        now = datetime.utcnow()
+        last = None
 
-    # Try to get a reading. If it fails, enter default values into the database.
-    try:
-        # TODO: Log when no connection.
-        emeter = plug.get_emeter_realtime()
-        running = emeter['power_mw']/1000 > 10 # Drawing more than 10W means the machine is running... TODO: get actual value!
-        last = WashingMachine.query.order_by(desc('timestamp')).first()
-        if last and last.running == running:
-            last_changed = last.last_changed
-        else:
-            last_changed = now
+        # Try to get a reading. If it fails, enter default values into the database.
+        try:
+            # TODO: Log when no connection.
+            emeter = plug.get_emeter_realtime()
+            running = emeter['power_mw']/1000 > 10 # Drawing more than 10W means the machine is running... TODO: get actual value!
+            last = WashingMachine.query.order_by(desc('timestamp')).first()
+            if last and last.running == running:
+                last_changed = last.last_changed
+            else:
+                last_changed = now
 
-        washing_machine = WashingMachine(timestamp=now,
-                                        running=running,
-                                        last_changed=last_changed,
-                                        voltage=emeter['voltage_mv']/1000,
-                                        current=emeter['current_ma']/1000,
-                                        power=emeter['power_mw']/1000,
-                                        total_power=emeter['total_wh']/1000)
-    except:
-        washing_machine = WashingMachine(timestamp=now,
-                                        running=False,
-                                        last_changed=None,
-                                        voltage=0,
-                                        current=0,
-                                        power=0,
-                                        total_power=0)
+            washing_machine = WashingMachine(timestamp=now,
+                                            running=running,
+                                            last_changed=last_changed,
+                                            voltage=emeter['voltage_mv']/1000,
+                                            current=emeter['current_ma']/1000,
+                                            power=emeter['power_mw']/1000,
+                                            total_power=emeter['total_wh']/1000)
+        except:
+            washing_machine = WashingMachine(timestamp=now,
+                                            running=False,
+                                            last_changed=None,
+                                            voltage=0,
+                                            current=0,
+                                            power=0,
+                                            total_power=0)
 
-    db.session.add(washing_machine)
-    db.session.flush()
+        db.session.add(washing_machine)
+        db.session.flush()
 
-    count = db.session.query(func.count(WashingMachine.timestamp)).scalar()
+        count = db.session.query(func.count(WashingMachine.timestamp)).scalar()
 
-    if count > 6307200: # delete oldest, when limit (one year; 6.307.200 rows (5sec interval), 50MB?) is reached
-        washing_machine = WashingMachine.query.order_by(asc('timestamp')).first()
-        db.session.delete(washing_machine)
-    
-    if count > 6400000: # Just to be sure..?
-        db.session.query(WashingMachine).delete()
+        if count > 6307200: # delete oldest, when limit (one year; 6.307.200 rows (5sec interval), 50MB?) is reached
+            washing_machine = WashingMachine.query.order_by(asc('timestamp')).first()
+            db.session.delete(washing_machine)
+        
+        if count > 6400000: # Just to be sure..?
+            db.session.query(WashingMachine).delete()
 
-    db.session.commit()
+        db.session.commit()
 
-    # Notify when Washing Mashine is finished
-    if last and last.running == True != running:
-        notify_all()
+        # Notify when Washing Mashine is finished
+        if last and last.running == True != running:
+            notify_all()
 
 
 def init_app(app):
+    global ap
+    ap = app
+
     # Run update task in the background
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=update_washing_mashine, trigger="interval", seconds=app.config['POLL_INTERVAL'])
