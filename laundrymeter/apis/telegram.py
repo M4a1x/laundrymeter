@@ -22,7 +22,7 @@ class NotifyTelegram(Resource):
 
     @auth.login_required
     def post(self):
-        """Add own user to be notified via email."""
+        """Add own user to be notified via telegram."""
         if g.user.telegram_chat_id:
             g.user.register_notification(telegram=True)
             return { 'result': 'success', 'notify_telegram': g.user.name }, 200
@@ -31,7 +31,7 @@ class NotifyTelegram(Resource):
 
     @auth.login_required
     def delete(self):
-        """Remove own user to be notifed via email."""
+        """Remove own user to be notifed via telegram."""
         if g.user.telegram_chat_id:
             g.user.register_notification(telegram=False)
             return { 'result': 'success', 'details': g.user.name + " won't recieve a message via telegram." }, 200
@@ -43,7 +43,8 @@ class NotifyTelegram(Resource):
 class RegisterTelegram(Resource):
     @auth.login_required
     def post(self):
-        """Register own user to enable notification via telegram. Replaces old user if previously registered."""
+        """Register own user to enable notification via telegram.
+        Replaces old user if previously registered, thus deauthenticating him."""
         token = g.user.generate_telegram_token()
         auth_url = "https://telegram.me/{}?start={}".format(telegram_bot.updater.bot.name[1:], token)
         return { 'result': 'success', 'auth_url': auth_url }, 200

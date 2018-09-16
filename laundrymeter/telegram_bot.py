@@ -12,7 +12,7 @@ from .models import User, WashingMachine
 def telegram_auth_required(func):
     @wraps(func)
     def wrapped(bot, update, *args, **kwargs):
-        with ap.app_context():
+        with app.app_context():
             user = User.query.filter_by(telegram_chat_id=update.message.chat_id).one()
             if not user:
                 update.message.reply_text("Unauthorized. Please authenticate first.")
@@ -29,7 +29,7 @@ def start(bot, update, args):
         update.message.reply_text("Missing token.")
         return
 
-    with ap.app_context():
+    with app.app_context():
         user = User.verify_telegram_token(token=args[0], chat_id=update.message.chat_id)
 
     if not user:
@@ -48,11 +48,11 @@ def status(bot, update):
     washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
     update.message.reply_text("Running" if washing_machine.running else "Stopped") 
 
-def init_app(app):
+def init_app(flask_app):
     global updater
-    global ap
-    updater = Updater(app.config['TELEGRAM_BOT_TOKEN'])
-    ap = app
+    global app
+    updater = Updater(flask_app.config['TELEGRAM_BOT_TOKEN'])
+    app = flask_app
 
     updater.dispatcher.add_handler(CommandHandler('notify', notify))
     updater.dispatcher.add_handler(CommandHandler('start', start, pass_args=True))

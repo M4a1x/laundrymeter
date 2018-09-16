@@ -62,7 +62,7 @@ class User(db.Model):
     def generate_telegram_token(self):
         """Generate a new telegram token and store it in the database.
         
-        Overwrites any existing token.
+        Overwrites any existing token, thus logging out currently authenticated chats.
         """
 
         session = inspect(self).session

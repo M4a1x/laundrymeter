@@ -32,7 +32,7 @@ def notify_all():
 
 
 def update_washing_mashine():
-    with ap.app_context():
+    with app.app_context():
         now = datetime.utcnow()
         last = None
 
@@ -82,13 +82,13 @@ def update_washing_mashine():
             notify_all()
 
 
-def init_app(app):
-    global ap
-    ap = app
+def init_app(flask_app):
+    global app
+    app = flask_app
 
     # Run update task in the background
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=update_washing_mashine, trigger="interval", seconds=app.config['POLL_INTERVAL'])
+    scheduler.add_job(func=update_washing_mashine, trigger="interval", seconds=flask_app.config['POLL_INTERVAL'])
     scheduler.start()
 
     # Shut down the scheduler when exiting the app

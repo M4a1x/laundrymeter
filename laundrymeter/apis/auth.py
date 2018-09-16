@@ -29,7 +29,13 @@ class Authentication(Resource):
     @auth.login_required
     @api.doc('get_token')
     def get(self):
-        '''Get a new token and invalidate the old one if it exists.'''
+        """Get a new token and invalidate the old one if it exists.
+
+        Use HTTP Basic Auth with `username:password` or `returned_token:unused`.
+
+        Remember that the request should be base64 encoded:
+        `Authorization: Basic base64('username:password')`
+        """
         token = g.user.generate_auth_token()
         return { 'token': token }
 
