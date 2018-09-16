@@ -45,8 +45,6 @@ class User(db.Model):
         Overwrites any existing token.
         """
 
-        # TODO: Test if this works as intended
-        # https://stackoverflow.com/questions/10882980/model-and-instance-methods-session-aware-sqlalchemy
         session = inspect(self).session
         self.auth_token = secrets.token_urlsafe()
         session.commit()
@@ -67,8 +65,6 @@ class User(db.Model):
         Overwrites any existing token.
         """
 
-        # TODO: Test if this works as intended
-        # https://stackoverflow.com/questions/10882980/model-and-instance-methods-session-aware-sqlalchemy
         session = inspect(self).session
         self.telegram_token = secrets.token_urlsafe()
         session.commit()
@@ -77,9 +73,10 @@ class User(db.Model):
     @staticmethod
     def verify_telegram_token(token, chat_id):
         """Verify telegram token delete it from database and return corresponding user object."""
+
         try:
-            session = inspect(self).session
             user = User.query.filter_by(telegram_token=token).one()
+            session = inspect(user).session
             user.telegram_token = ""
             user.telegram_chat_id = chat_id
             session.commit()
