@@ -12,6 +12,8 @@ HTTP Basic Auth.
 from flask_restplus import Namespace, Resource
 from flask_httpauth import HTTPBasicAuth
 from flask import current_app, g
+from ldap3 import Server, Connection, ALL
+
 from ..models import User, db
 
 # TODO: Add api doc?
@@ -23,7 +25,6 @@ auth = HTTPBasicAuth()
 @api.route('/')
 class Authentication(Resource):
     @api.doc('get_token')
-    @auth.login_required
     def get(self):
         '''Get a new token and invalidate the old one if it exists.'''
         token = g.user.generate_auth_token()
@@ -46,17 +47,19 @@ def verify_login(username_or_token, password):
         Corresponding User object is stored in `g.user`.
     
     '''
+    if not username_or_token:
+        return False
+
     user = User.verify_auth_token(username_or_token)
+
     if not user:
         # Verify User against ldap
-        server = ldap3.Server(current_app.config['LDAP_URL'],
-                              use_ssl=True,
-                              get_info=ldap3.ALL)
-        conn = ldap3.Connection(server, 
-                                '{username}@{ldap}'.format(
-                                    username=username_or_token,
-                                    ldap=current_app.config['LDAP_URL']),
-                                password)
+        server = Server(current_app.config['LDAP_URL'],
+                        use_ssl=True,
+                        get_info=ALL)
+        ldap_username = '{username}@{ldap}'.format(username=username_or_token,
+                                                   ldap=current_app.config['LDAP_URL'])
+        conn = Connection(server, ldap_username, password)
         if not conn.bind():
             return False
 
