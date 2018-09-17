@@ -90,7 +90,7 @@ def verify_login(username_or_token, password):
                         name=conn.entries[0].name.value,
                         notify_email=False,
                         notify_telegram=False,
-                        telegram_token = "",
+                        telegram_token = None,
                         telegram_chat_id=None,
                         auth_token=None)
             db.session.add(user)
