@@ -77,7 +77,7 @@ class User(db.Model):
         try:
             user = User.query.filter_by(telegram_token=token).one()
             session = inspect(user).session
-            user.telegram_token = ""
+            user.telegram_token = None
             user.telegram_chat_id = chat_id
             session.commit()
         except:
