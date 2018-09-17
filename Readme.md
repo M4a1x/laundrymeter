@@ -7,6 +7,21 @@ Installation
 * python3 & pip3
 * `pip install -r requirements.txt`
 
+Configuration
+-------------
+
+* VM IP: 100.117.66.20
+* Needs the following connections:
+    * TP-Link Smartplug, in local network 192.168.22.3
+    * LDAP-Server, SSL-Port [ldap.example.org:636](192.168.21.10:636)
+    * Internet, Port 443 for Secure HTTPS Traffic
+
+Washing Machine Stats
+---------------------
+* Closed door, not running, but on: 2.2W, current: 33mA
+* Open door, not running, but on: 0W, current: 42mA
+* Off: 0W, 42mA
+
 Roadmap
 -------
 
