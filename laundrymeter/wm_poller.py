@@ -86,6 +86,9 @@ def init_app(flask_app):
     global app
     app = flask_app
 
+    global plug
+    plug = SmartPlug(flask_app.config['SMART_PLUG_IP'])
+
     # Run update task in the background
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=update_washing_mashine, trigger="interval", seconds=flask_app.config['POLL_INTERVAL'])
