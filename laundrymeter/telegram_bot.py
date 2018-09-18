@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler
 from functools import wraps
 import atexit
 
-from .models import User, WashingMachine
+from .models import User, WashingMachine, WashingMachineSchema
 
 
 # TODO: Docstring

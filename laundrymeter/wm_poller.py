@@ -40,7 +40,7 @@ def update_washing_mashine():
         try:
             # TODO: Log when no connection.
             emeter = plug.get_emeter_realtime()
-            running = emeter['power_mw']/1000 > 10 # Drawing more than 10W means the machine is running... TODO: get actual value!
+            running = emeter['power_mw']/1000 > 5 # Drawing more than 5W means the machine is running... TODO: get actual value!
             last = WashingMachine.query.order_by(desc('timestamp')).first()
             if last and last.running == running:
                 last_changed = last.last_changed
