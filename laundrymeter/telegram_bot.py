@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler
 from functools import wraps
 import atexit
 
-from .models import User, WashingMachine
+from .models import User, WashingMachine, 
 
 
 # TODO: Docstring
@@ -46,7 +46,13 @@ def notify(bot, update):
 @telegram_auth_required
 def status(bot, update):
     washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
-    update.message.reply_text("Running" if washing_machine.running else "Stopped") 
+    update.message.reply_text("Running" if washing_machine.running else "Stopped")
+
+@telegram_auth_required
+def debug(bot, update):
+    washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
+    wm_debug_schema = WashingMachineSchema()
+    update.message.reply_text(wm_debug_schema.dumps(washing_machine))
 
 def init_app(flask_app):
     global updater
@@ -57,6 +63,7 @@ def init_app(flask_app):
     updater.dispatcher.add_handler(CommandHandler('notify', notify))
     updater.dispatcher.add_handler(CommandHandler('start', start, pass_args=True))
     updater.dispatcher.add_handler(CommandHandler('status', status))
+    updater.dispatcher.add_handler(CommandHandler('debug', debug))
 
     updater.start_polling()
     atexit.register(lambda: updater.stop())
