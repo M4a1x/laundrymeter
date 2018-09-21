@@ -2,6 +2,7 @@ from sqlalchemy import asc, desc, func
 from pyHS100 import SmartPlug
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
+import smtplib
 import atexit
 
 from .models import User, WashingMachine, db
