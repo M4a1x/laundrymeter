@@ -12,24 +12,26 @@ def notify_all():
     # Email
     users_email = User.query.filter_by(notify_email=True)
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(sender_email, sender_password)
-    
-    msg = "The Washing Machine has just finished!"
-    for user in users_email:
-        server.sendmail(sender_email, user.email, msg)
-        user.notify_email = False # Only notify once
-    server.quit()        
-    db.session.commit()
+    if users_email:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 587) as server:
+            server.login(app.config['SMTP_EMAIL'], app.config['SMTP_PASSWORD'])
+            
+            msg = 'Subject: {}\n\n{}'.format(
+                "The laundry is ready!",
+                "The time was: {}.\n\n---\nThis service has been kindly provided by your friendly neighbourhood programmer.".format(datetime.now))
+            for user in users_email:
+                server.sendmail(app.config['SMTP_EMAIL'], user.email, msg)
+                user.notify_email = False # Only notify once     
+            db.session.commit()
 
     # Telegram
     users_telegram = User.query.filter_by(notify_telegram=True)
 
-    for user in users_telegram:
-        updater.bot.send_message(chat_id=user.telegram_chat_id, text="The laundry is ready!")
-        user.notify_telegram = False # Only notify once
-    db.session.commit()
+    if users_telegram:
+        for user in users_telegram:
+            updater.bot.send_message(chat_id=user.telegram_chat_id, text="The laundry is ready!")
+            user.notify_telegram = False # Only notify once
+        db.session.commit()
 
 
 def update_washing_mashine():
