@@ -18,7 +18,7 @@ def notify_all():
             
             msg = 'Subject: {}\n\n{}'.format(
                 "The laundry is ready!",
-                "The time was: {}.\n\n---\nThis service has been kindly provided by your friendly neighbourhood programmer.".format(datetime.now))
+                "The time was: {}.\n\n---\nThis service is kindly provided by your friendly neighbourhood programmer.".format(datetime.now))
             for user in users_email:
                 server.sendmail(app.config['SMTP_EMAIL'], user.email, msg)
                 user.notify_email = False # Only notify once     
