@@ -13,7 +13,8 @@ def notify_all():
     users_email = User.query.filter_by(notify_email=True)
 
     if users_email:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 587) as server:
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
             server.login(app.config['SMTP_EMAIL'], app.config['SMTP_PASSWORD'])
             
             msg = 'Subject: {}\n\n{}'.format(
