@@ -6,7 +6,7 @@ from .auth import auth
 
 
 api = Namespace('machine',
-                description='Operations for querying the current washing machine status.')
+                description='Operations for querying the current machine status.')
 
 wm_status_schema = WashingMachineSchema(only=('timestamp', 'running', 'last_changed'))
 wm_debug_schema = WashingMachineSchema()
@@ -36,6 +36,6 @@ class DebugInfo(Resource):
 class MachineHistory(Resource):
     @auth.login_required
     def get(self, amount):
-        "Returns list of last `amount` washing machine states (one state every 5s)."
+        "Returns list of last 'amount' washing machine states (one state every 5s)."
         history = WashingMachine.query.order_by(desc('timestamp')).limit(amount)
         return wm_debug_schema.dumps(history, many=True)
