@@ -31,3 +31,11 @@ class DebugInfo(Resource):
         "Return current extended status of the washing machine."
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         return wm_debug_schema.dumps(washing_machine)
+
+@api.route('/history/<int:amount>')
+class MachineHistory(Resource):
+    @auth.login_required
+    def get(self, amount):
+        "Returns list of last `amount` washing machine states (one state every 5s)."
+        history = WashingMachine.query.order_by(desc('timestamp')).limit(amount)
+        return wm_debug_schema.dumps(history, many=True)
