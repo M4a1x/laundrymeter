@@ -6,6 +6,7 @@ import smtplib
 import atexit
 
 from .models import User, WashingMachine, db
+from . import telegram_bot as tb
 
 
 def notify_all():
@@ -19,7 +20,7 @@ def notify_all():
             
             msg = 'Subject: {}\n\n{}'.format(
                 "The laundry is ready!",
-                "The time was: {}.\n\n---\nThis service is kindly provided by your friendly neighbourhood programmer.".format(datetime.now))
+                "The time was: {}.\n\n\n---\nThis service is kindly provided by your friendly neighbourhood programmer.".format(datetime.now()))
             for user in users_email:
                 server.sendmail(app.config['SMTP_EMAIL'], user.email, msg)
                 user.notify_email = False # Only notify once     
@@ -30,7 +31,7 @@ def notify_all():
 
     if users_telegram:
         for user in users_telegram:
-            updater.bot.send_message(chat_id=user.telegram_chat_id, text="The laundry is ready!")
+            tb.updater.bot.send_message(chat_id=user.telegram_chat_id, text="The laundry is ready!")
             user.notify_telegram = False # Only notify once
         db.session.commit()
 
