@@ -61,7 +61,7 @@ def update_washing_mashine():
                     running = True
 
             last = WashingMachine.query.order_by(desc('timestamp')).first()
-            if last and last.running == running:
+            if last and last.running == running and last.last_changed:
                 last_changed = last.last_changed
             else:
                 last_changed = now
