@@ -38,6 +38,8 @@ def notify_all():
 
 def update_washing_mashine():
     with app.app_context():
+        global counter
+        global running
         now = datetime.utcnow()
         last = None
 
