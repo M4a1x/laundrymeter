@@ -4,8 +4,16 @@ Washing Machine App
 Installation
 ------------
 
-* python3 & pip3
-* `pip install -r requirements.txt`
+* Requires git, python3, pip3, pipenv
+    * In case you just have python3 installed, issue the following commands:
+        * `curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
+        * `python get-pip.py --user`
+        * `pip install --user pipenv`
+* Clone repository: `git clone https://github.com/M4a1x/laundrymeter`
+* Enter directory: `cd laundrymeter`
+* Install dependencies using `pipenv install`
+* Run `./start_development.sh` or `./start_production.sh`
+
 
 Configuration
 -------------
