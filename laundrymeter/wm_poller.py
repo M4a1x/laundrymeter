@@ -45,7 +45,19 @@ def update_washing_mashine():
         try:
             # TODO: Log when no connection.
             emeter = plug.get_emeter_realtime()
-            running = emeter['power_mw']/1000 > 5 # Drawing more than 5W means the machine is running... TODO: get actual value!
+            if running:
+                if emeter['power_mw']/1000 < 50: # Threshold of 50W for running/idle
+                    counter += 1
+                else:
+                    counter = 0
+
+                if counter > 48: # Washing machine inactive for more than 48 measurments (4 min)
+                    running = False
+                
+            else:
+                if emeter['power_mw']/1000 > 50:
+                    running = True
+
             last = WashingMachine.query.order_by(desc('timestamp')).first()
             if last and last.running == running:
                 last_changed = last.last_changed
@@ -93,6 +105,12 @@ def init_app(flask_app):
 
     global plug
     plug = SmartPlug(flask_app.config['SMART_PLUG_IP'])
+
+    global counter
+    counter = 0
+
+    global running
+    running = False
 
     # Run update task in the background
     scheduler = BackgroundScheduler()
