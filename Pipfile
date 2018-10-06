@@ -16,6 +16,7 @@ Flask = "==1.0.2"
 Flask-SQLAlchemy = "==2.3.2"
 flask-httpauth = "*"
 marshmallow-sqlalchemy = "*"
+gunicorn = "*"
 
 [dev-packages]
 
