@@ -14,13 +14,24 @@ Configuration
 * Needs the following connections:
     * TP-Link Smartplug, in local network 192.168.22.3
     * LDAP-Server, SSL-Port [ldap.example.org:636](192.168.21.10:636)
-    * Internet, Port 443 for Secure HTTPS Traffic
+    * Internet, Port 443 for Secure HTTPS Traffic or 80 if forwarded to public internet
 
 Washing Machine Stats
 ---------------------
 * Closed door, not running, but on: 2.2W, current: 33mA
 * Open door, not running, but on: 0W, current: 42mA
 * Off: 0W, 42mA
+* Finished: < 50W distinct pattern, sharp spikes with pauses
+* Heating: > 2000W Temperature can probably be infered from duration
+
+Running Detection
+-----------------
+* Simple Threshold
+* Signal Energy, AKF
+* Double Threshold
+* Timed Threshold
+
+* Problem: Machine pauses after heatup. 3min, 2min -> Threshold of 50W, delay of 4min (48 ticks)
 
 Roadmap
 -------
@@ -36,3 +47,4 @@ Roadmap
 * Write setup.py for installation (to docker conainter?)
 * Write dockerfiles to encapsulate the service
 * Write docker-compose script (or so) to integrate different containers (nginx, python, ...)
+* Write analysis tool/graph (plotly?)
