@@ -9,6 +9,7 @@ the user wants to be notified via the corresponding method.
 
 """
 
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from sqlalchemy import inspect
@@ -81,6 +82,7 @@ class User(db.Model):
             user.telegram_chat_id = chat_id
             session.commit()
         except:
+            current_app.logger.exception('Failed to verify telegram token %s send by %d', token, chat_id)
             user = None
         return user
 
@@ -100,6 +102,8 @@ class User(db.Model):
             if 'telegram' in kwargs:
                 self.notify_telegram = kwargs['telegram']
             session.commit()
+        else:
+            current_app.logger.debug('register_notification() called without arguments')
 
 
 class WashingMachine(db.Model):

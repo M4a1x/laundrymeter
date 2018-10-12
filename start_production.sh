@@ -1,2 +1,2 @@
 #!/bin/bash
-pipenv run gunicorn -w 4 -b 0.0.0.0:8000 "laundrymeter:create_app()"
+pipenv run gunicorn -w 1 -b 0.0.0.0:8000 --error-logfile "laundrymeter-err.log" --log-file "laundrymeter.log" --log-level debug "laundrymeter:create_app()"

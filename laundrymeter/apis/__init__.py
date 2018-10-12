@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 from flask_restplus import Api
 
 from .machine import api as machine

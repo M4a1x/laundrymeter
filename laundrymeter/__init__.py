@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+import logging
 
 from .apis import bp as api
 from .models import db, ma
@@ -14,6 +15,9 @@ def create_app(test_config=None):
     
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    app.logger.setLevel(logging.DEBUG)
+    app.logger.debug("Setting up main application...")
 
     # Default config
     app.config.from_mapping(
@@ -59,4 +63,5 @@ def create_app(test_config=None):
     # Init Washing Machine poller
     wm_poller.init_app(app)
 
+    app.logger.debug("Finished setting up main application.")
     return app

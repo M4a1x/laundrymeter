@@ -15,10 +15,12 @@ def telegram_auth_required(func):
         with app.app_context():
             user = User.query.filter_by(telegram_chat_id=update.message.chat_id).one()
             if not user:
+                app.logger.info('Unauthorized Telegram message received from %d', update.message.chat_id)
                 update.message.reply_text("Unauthorized. Please authenticate first.")
                 return
 
             g.user = user
+            app.logger.debug('User %s (%s) successfully authenticated command call', user.username, user.name)
 
             # Return inside app_context() to use same app context in called function. (to be able to use g)
             return func(bot, update, *args, **kwargs)
@@ -40,21 +42,36 @@ def start(bot, update, args):
 
 @telegram_auth_required
 def notify(bot, update):
-    g.user.register_notification(telegram=True)
-    update.message.reply_text("You will be notified as soon as the laundry is ready.")
+    try:
+        g.user.register_notification(telegram=True)
+        app.logger.debug('User %s (%s) successfully called notify(). He will be notified when the laundry is ready.', g.user.username, g.user.name)
+        update.message.reply_text("You will be notified as soon as the laundry is ready.")
+    except Exception as e:
+        update.message.reply_text("There was an error registering you.")
+        app.logger.exception("User %s (%s) raised an error on notify(). He couldn't be added for notification.", g.user.username, g.user.name)
 
 @telegram_auth_required
 def status(bot, update):
-    washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
-    update.message.reply_text("Running" if washing_machine.running else "Stopped")
+    try:
+        washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
+        app.logger.debug('User %s (%s) successfully called status(). Current Wasching Machine status was returned.', g.user.username, g.user.name)
+        update.message.reply_text("The Washing Machine is currently " + ("Running" if washing_machine.running else "Stopped"))
+    except Exception as e:
+        app.logger.exception("User %s (%s) raised an exception on status(). Couldn't retrieve it from the Database.", g.user.username, g.user.name)
+        update.message.reply_text("Couldn't retrieve the current machine status.")
 
 @telegram_auth_required
 def debug(bot, update):
-    washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
-    wm_debug_schema = WashingMachineSchema()
-    update.message.reply_text(wm_debug_schema.dumps(washing_machine))
+    try:
+        washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
+        wm_debug_schema = WashingMachineSchema()
+        update.message.reply_text(wm_debug_schema.dumps(washing_machine))
+    except Exception as e:
+        app.logger.exception("User %s (%s) raised an exception on debug(). Couldn't retrieve it from the Database.", g.user.username, g.user.name)
+        update.message.reply_text("Couldn't retrieve the current machine status.")
 
 def init_app(flask_app):
+    flask_app.logger.debug('Initializing Telegram Bot...')
     global updater
     global app
     updater = Updater(flask_app.config['TELEGRAM_BOT_TOKEN'])
@@ -65,5 +82,7 @@ def init_app(flask_app):
     updater.dispatcher.add_handler(CommandHandler('status', status))
     updater.dispatcher.add_handler(CommandHandler('debug', debug))
 
+    flask_app.logger.debug('Starting Telegram Message Poller...')
     updater.start_polling()
     atexit.register(lambda: updater.stop())
+    flask_app.logger.debug('Finished setting up Telegram Bot.')
