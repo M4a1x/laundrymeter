@@ -54,7 +54,7 @@ def notify(bot, update):
 def status(bot, update):
     try:
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
-        app.logger.debug('User %s (%s) successfully called status(). Current Wasching Machine status was returned.', g.user.username, g.user.name)
+        app.logger.debug('User %s (%s) successfully called status(). Current Wasching Machine status was returned: %s', g.user.username, g.user.name, washing_machine.running)
         update.message.reply_text("The Washing Machine is currently " + ("Running" if washing_machine.running else "Stopped"))
     except Exception as e:
         app.logger.exception("User %s (%s) raised an exception on status(). Couldn't retrieve it from the Database.", g.user.username, g.user.name)
@@ -65,6 +65,7 @@ def debug(bot, update):
     try:
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         wm_debug_schema = WashingMachineSchema()
+        app.logger.debug('User %s (%s) successfully called debug(). Current Wasching Machine status was returned: %s', g.user.username, g.user.name, wm_debug_schema)
         update.message.reply_text(wm_debug_schema.dumps(washing_machine))
     except Exception as e:
         app.logger.exception("User %s (%s) raised an exception on debug(). Couldn't retrieve it from the Database.", g.user.username, g.user.name)
