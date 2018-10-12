@@ -19,7 +19,7 @@ def notify_all():
         users_email = None
 
     if users_email:
-        app.logger.debug('Trying to notify %d users via email.', len(users_email))
+        app.logger.debug('Trying to notify %d users via email.', users_email.count())
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             try:
                 server.starttls() # Starts the connection
@@ -52,7 +52,7 @@ def notify_all():
         users_telegram = None
 
     if users_telegram:
-        app.logger.debug("Trying to notify %d users via telegram...", len(users_telegram))
+        app.logger.debug("Trying to notify %d users via telegram...", users_telegram.count())
         for user in users_telegram:
             try:
                 tb.updater.bot.send_message(chat_id=user.telegram_chat_id, text="The laundry is ready!")
@@ -126,7 +126,7 @@ def update_washing_mashine():
 
             db.session.add(washing_machine)
             db.session.flush()
-            app.logger.debug("Successfully added emeter measurement to the database.")
+            app.logger.debug("Successfully added emeter measurement to the database: %s", washing_machine)
 
         except SmartDeviceException as e:
             if e.args and e.args[0] == 'Communication error':
