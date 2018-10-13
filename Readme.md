@@ -30,9 +30,10 @@ Configuration
 
 * VM IP: 100.117.66.20
 * Needs the following connections:
-    * TP-Link Smartplug, in local network 192.168.22.3
-    * LDAP-Server, SSL-Port [ldap.example.org:636](192.168.21.10:636)
-    * Internet, Port 443 for HTTPS (with e.g. nginx) or 80 local if forwarded to public internet
+    * TP-Link Smartplug (for sensor readout), in 192.168.22.3
+    * LDAP-Server, SSL-Port [192.168.21.10:636](192.168.21.10:636), for authentication
+    * Port 587 to connect to gmail via STARTTLS, to send notifications
+    * Port 8000 for unencrypted access to REST Api. Reverse proxy for https is recommended.
 
 Washing Machine Stats
 ---------------------
@@ -45,6 +46,7 @@ Washing Machine Stats
 
 Running Detection
 -----------------
+
 Problem
 
 * Machine pauses after heatup. 3min, 2min
