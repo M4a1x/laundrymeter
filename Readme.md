@@ -23,6 +23,7 @@ To run the server on port 80 (or other port < 1024)
 To be able to logout from ssh after starting the server
 
 * Use `nohup authbind --deep sh start_production.sh &`
+* or `tmux` / `screen`
 
 Configuration
 -------------
