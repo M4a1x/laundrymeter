@@ -55,22 +55,3 @@ Other ideas:
 * Signal Energy, AKF
 * Double Threshold
 * Timed Threshold
-
-Roadmap
--------
-
-* Use techniques from [Flask Tutorial](http://flask.pocoo.org/docs/1.0/tutorial/layout/) and [flask-restplus Scaling](https://flask-restplus.readthedocs.io/en/0.11.0/scaling.html)
-* Modularize app.py, maybe use schedule then, instead of apscheduler (celery is probably overkill)
-* Write better documentation (function, class, etc.)
-* Write better api documentation (swagger)
-* Write tests!
-* Implement Logging!
-* Better exception Handling (no plug detected, wrong parameters, ...)
-* export config to seperate file
-* Write setup.py for installation (to docker conainter?)
-* Write systemd service file
-* Write dockerfiles to encapsulate the service
-* Write docker-compose script (or so) to integrate different containers (nginx, python, ...)
-* Write analysis tool/graph (plotly?) -> live update (realtime) -> Dash (from plotly): React, flask and plotly -> Maybe integrate notification button and login as well?
-* extract wm_poller to seperate program, because the way it currently is, there is one poller per gunicorn worker when launched in production
-* Backdate finish event time (which is sent to the user) by 48 events (current delay), so he knows the exact time the machine stopped.
