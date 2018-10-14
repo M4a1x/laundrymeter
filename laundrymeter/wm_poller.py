@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""Main polling module
+
+This module provides the background process to query the status of the 
+washing machine and writing the results to the database as well as
+notifying the users when the washing machine is detected as not running.
+
+"""
+
 from sqlalchemy import asc, desc, func
 from pyHS100 import SmartPlug, SmartDeviceException
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -9,7 +18,8 @@ from .models import User, WashingMachine, db
 from . import telegram_bot as tb
 
 
-def notify_all():
+def notify_all() -> None:
+    """Notifies all users which are registered to be notified in the database."""
     # Email
     app.logger.debug('Notifying users by email...')
     try:
@@ -66,7 +76,8 @@ def notify_all():
     else:
         app.logger.debug("No user wanted to be notified via telegram.")
 
-def createEmptyWashingMachine(now):
+def createEmptyWashingMachine(now: datetime) -> WashingMachine:
+    """Creates an default entry for the Database with the given timestamp."""
     return WashingMachine(timestamp=now,
                           running=False,
                           last_changed=None,
@@ -75,7 +86,9 @@ def createEmptyWashingMachine(now):
                           power=0,
                           total_power=0)
 
-def update_washing_mashine():
+def update_washing_mashine() -> None:
+    """Querying the washing machine to get the current status and update the
+    database with the new values."""
     with app.app_context():
         global counter
         global running
@@ -156,6 +169,7 @@ def update_washing_mashine():
             notify_all()
 
 def init_app(flask_app):
+    """Initialize the background poller and start the scheduler."""
     flask_app.logger.debug("Setting up wm_poller...")
     global app
     app = flask_app

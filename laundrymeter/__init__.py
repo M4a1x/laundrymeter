@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""Laundrymeter notifies you when the laundry is ready
+
+It consists of an REST API part as main interaction point with different
+notifiers available. The status of the machine is queried every n seconds
+and written to a database. When a state change running -> stopped is 
+detected it sends out a notification to subscribed users.
+
+"""
+
 import os
 from flask import Flask
 import logging

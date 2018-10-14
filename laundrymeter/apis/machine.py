@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""REST API for querying the machine status
+
+This module provides an endpoint for retrieving the normal and extenden (debug)
+status of the washing machine. It has endpoints for retrieving the current time
+as well as in the past.
+
+"""
+
 from flask import g, current_app
 from flask_restplus import Namespace, Resource, abort
 from sqlalchemy import desc
@@ -7,7 +16,7 @@ from .auth import auth
 
 
 api = Namespace('machine',
-                description='Operations for querying the current machine status.')
+                description='Operations for querying the machine status.')
 
 wm_status_schema = WashingMachineSchema(only=('timestamp', 'running', 'last_changed'))
 wm_debug_schema = WashingMachineSchema()

@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""REST API for Email notification operations
+
+This module provides an endpoint for registering, removing and listing
+email notifications.
+
+"""
+
 from flask import g, current_app
 from flask_restplus import Namespace, Resource, abort
 

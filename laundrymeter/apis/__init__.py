@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""REST Api Endpoint
+
+This module provides the main REST API endpoints, which is the center of this project.
+It includes authentication, email and telegram registration/notification and
+machine queries.
+
+"""
+
 from flask import Blueprint, current_app
 from flask_restplus import Api
 

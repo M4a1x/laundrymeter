@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""Contains helper functions for the database.
+
+Currently only reinitializing the database (dropping all entries) is possible.
+
+"""
+
 import click
 from flask.cli import with_appcontext
 

@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""Telegram Bot responding to commands different commands.
+
+Defines callbacks to Telegram commands, providing a subset of the REST Api.
+Authentication is provided via a start token that has to be obtained via
+the REST API first.
+
+"""
+
 from flask import g
 from sqlalchemy import desc
 from telegram.ext import Updater, CommandHandler
@@ -7,9 +16,8 @@ import atexit
 from .models import User, WashingMachine, WashingMachineSchema
 
 
-# TODO: Docstring
-
 def telegram_auth_required(func):
+    """Function wrapper to provide authentication on telegram commands."""
     @wraps(func)
     def wrapped(bot, update, *args, **kwargs):
         with app.app_context():
@@ -27,21 +35,31 @@ def telegram_auth_required(func):
     return wrapped
 
 def start(bot, update, args):
-    if not args:
-        update.message.reply_text("Missing token.")
-        return
-
+    """Telegram callback for the '/start' command send as first command in every chat."""
     with app.app_context():
+        if not args:
+            app.logger.debug("A user %s (%s) tried to start a chat with the telegram bot, without providing a token.",
+                             update.message.from_user.full_name,
+                             update.message.from_user.username)
+            update.message.reply_text("Missing token. Please call `/start \{token\}` with the correct token to authenticate.")
+            return
+
+        update.message
         user = User.verify_telegram_token(token=args[0], chat_id=update.message.chat_id)
 
-    if not user:
-        update.message.reply_text("Invalid token.")
-        return
+        if not user:
+            app.logger.debug("A user %s (%s) provided an invalid token for authentication when calling /start",
+                             update.message.from_user.full_name,
+                             update.message.from_user.username)
+            update.message.reply_text("Invalid token. Please call `/start \{token\}` with the correct token to authenticate.")
+            return
 
-    update.message.reply_text("Successfully authenticated!")
+        app.logger.debug('User %s (%s) successfully authenticated via telegram.', user.username, user.name)
+        update.message.reply_text("Successfully authenticated!")
 
 @telegram_auth_required
 def notify(bot, update):
+    """Telegram callback for `/notify` to regsiter a user to be notified when the laundry is ready."""
     try:
         g.user.register_notification(telegram=True)
         app.logger.debug('User %s (%s) successfully called notify(). He will be notified when the laundry is ready.', g.user.username, g.user.name)
@@ -52,6 +70,7 @@ def notify(bot, update):
 
 @telegram_auth_required
 def status(bot, update):
+    """Telegram callback for `/status` to query the current simple status of the washing machine."""
     try:
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         app.logger.debug('User %s (%s) successfully called status(). Current Wasching Machine status was returned: %s', g.user.username, g.user.name, washing_machine.running)
@@ -62,6 +81,7 @@ def status(bot, update):
 
 @telegram_auth_required
 def debug(bot, update):
+    """Telegram callback for `/debug` to query the current extended status of the washing machine."""
     try:
         washing_machine = WashingMachine.query.order_by(desc('timestamp')).first()
         wm_debug_schema = WashingMachineSchema()
@@ -71,7 +91,8 @@ def debug(bot, update):
         app.logger.exception("User %s (%s) raised an exception on debug(). Couldn't retrieve it from the Database.", g.user.username, g.user.name)
         update.message.reply_text("Couldn't retrieve the current machine status.")
 
-def init_app(flask_app):
+def init_app(flask_app: Flask) -> None:
+    """Initializing the telegram app with app context and registering callbacks"""
     flask_app.logger.debug('Initializing Telegram Bot...')
     global updater
     global app

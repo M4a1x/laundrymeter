@@ -40,10 +40,13 @@ class User(db.Model):
     telegram_chat_id = db.Column(db.Integer, unique=True)
     telegram_token = db.Column(db.String(255), unique=True)
 
-    def generate_auth_token(self):
+    def generate_auth_token(self) -> str:
         """Generate a new auth token and store it in the database.
         
         Overwrites any existing token.
+
+        Returns:
+            The authentication token added to the database
         """
 
         session = inspect(self).session
@@ -52,18 +55,25 @@ class User(db.Model):
         return self.auth_token
 
     @staticmethod
-    def verify_auth_token(token):
-        """Verify auth token and return corresponding user object."""
+    def verify_auth_token(token: str) -> User:
+        """Verify auth token and return corresponding user object.
+        
+        Returns:
+            The object of the authenticated user, None otherwise.
+        """
         try:
             user = User.query.filter_by(auth_token=token).one()
         except:
             user = None
         return user
 
-    def generate_telegram_token(self):
+    def generate_telegram_token(self) -> str:
         """Generate a new telegram token and store it in the database.
         
         Overwrites any existing token, thus logging out currently authenticated chats.
+
+        Returns:
+            The telegram token added to the database.
         """
 
         session = inspect(self).session
@@ -72,8 +82,19 @@ class User(db.Model):
         return self.telegram_token
 
     @staticmethod
-    def verify_telegram_token(token, chat_id):
-        """Verify telegram token delete it from database and return corresponding user object."""
+    def verify_telegram_token(token: str, chat_id: int) -> User:
+        """Verify telegram token delete it from database and return corresponding user object.
+        
+        Args:
+            token: Telegram token to be verified (usually received through 
+                   `/start {token}` command
+            chat_id: The id of the chat that the token was recieved on, i.e.
+                     the chat to be verified.
+
+        Returns:
+            The verified user object on success, None otherwise.
+
+        """
 
         try:
             user = User.query.filter_by(telegram_token=token).one()
@@ -86,7 +107,7 @@ class User(db.Model):
             user = None
         return user
 
-    def register_notification(self, **kwargs):
+    def register_notification(self, **kwargs) -> None:
         """Register supplied notifications.
         
         Args:
