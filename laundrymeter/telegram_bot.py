@@ -7,6 +7,7 @@ the REST API first.
 
 """
 
+from __future__ import annotations
 from flask import g
 from sqlalchemy import desc
 from telegram.ext import Updater, CommandHandler

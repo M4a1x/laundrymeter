@@ -9,6 +9,7 @@ the user wants to be notified via the corresponding method.
 
 """
 
+from __future__ import annotations
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
