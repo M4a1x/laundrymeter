@@ -42,7 +42,9 @@ def create_app(test_config=None):
         SMTP_EMAIL='test@example.org',
         SMTP_PASSWORD='dev',
         TELEGRAM_BOT_TOKEN='dev',
-        POLL_INTERVAL=5
+        POLL_INTERVAL=5,                # The washing machine will be polled every 5 seconds
+        RUNNING_THRESHOLD_POWER = 80,   # below 80 Watts, the machine will be considered "not running"
+        RUNNING_THRESHOLD_TICKS = 56    # after 56 Ticks (a 5 sec) it will be considered "off"
     )
 
     if test_config is None:

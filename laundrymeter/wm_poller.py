@@ -103,21 +103,21 @@ def update_washing_mashine() -> None:
             app.logger.debug('Finished querying emeter: %s', emeter)
             if running:
                 app.logger.debug("Washing Machine is thought as running...")
-                if emeter['power_mw']/1000 < 50: # Threshold of 50W for running/idle
+                if emeter['power_mw']/1000 < app.config['RUNNING_THRESHOLD_POWER']: # Threshold for running/idle
                     counter += 1
                     app.logger.debug("Washing Machine is not running at this very moment (Power below threshold). Increasing counter by 1. Current counter: %d", counter)
                 else:
                     counter = 0
                     app.logger.debug("Washing Machine is running at this very moment (Power above threshold). Resetting counter: %d", counter)
 
-                if counter > 48: # Washing machine inactive for more than 48 measurments (4 min)
+                if counter > app.config['RUNNING_THRESHOLD_TICKS']: # Washing machine inactive for more than RUNNING_THRESHOLD_TICKS measurments (4 min)
                     counter = 0
                     running = False
                     app.logger.debug("Washing Machine was thought of running, but is actually turned off. Counter %d. Running %s.", counter, running)
                 
             else:
                 app.logger.debug("Washing Machine is thought of as turned off...")
-                if emeter['power_mw']/1000 > 50:
+                if emeter['power_mw']/1000 > app.config['RUNNING_THRESHOLD_POWER']:
                     running = True
                     app.logger.debug("Washing Machine was thought of as turned off, but is actually running. Running %s", running)
                 else:
