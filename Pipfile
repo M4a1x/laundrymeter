@@ -16,13 +16,18 @@ Flask-SQLAlchemy = "*"
 flask-httpauth = "*"
 marshmallow-sqlalchemy = "*"
 gunicorn = "*"
+dash = "*"
+dash-html-components = "*"
+dash-core-components = "*"
+dash-auth = "*"
 
 [dev-packages]
 pytest = "*"
 coverage = "*"
+rope = "*"
 
 [requires]
 python_version = "3.7"
-
-[pipenv]
-allow_prereleases = true
+# Made problems with dash, i.e. layout wouldnt show
+#[pipenv]
+#allow_prereleases = true

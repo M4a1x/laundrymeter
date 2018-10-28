@@ -17,6 +17,7 @@ from .models import db, ma
 from . import telegram_bot
 from . import wm_poller
 from . import db_helper
+from . import dashboard
 
 
 # Application Factory
@@ -74,6 +75,9 @@ def create_app(test_config=None):
 
     # Init Washing Machine poller
     wm_poller.init_app(app)
+
+    # Create Dash app (after SQLAlchemy!)
+    dashboard.init_app(app)
 
     app.logger.debug("Finished setting up main application.")
     return app
